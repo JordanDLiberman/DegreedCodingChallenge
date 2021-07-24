@@ -1,4 +1,5 @@
 ﻿using DegreedCodingChallenge.Interfaces;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -23,6 +24,7 @@ namespace DegreedCodingChallenge.Controllers
 
         [HttpGet]
         [Route("")]
+        //[EnableCors("LocalHost")]
         public async Task<string> Get()
         {
             return await _jokeService.GetRandomJoke();
@@ -30,6 +32,7 @@ namespace DegreedCodingChallenge.Controllers
 
         [HttpGet]
         [Route("{searchTerm}")]
+        //[EnableCors("LocalHost")]
         public async Task<Dictionary<string, List<string>>> Search(string searchTerm)
         {
             return await _jokeService.SearchJokes(searchTerm);

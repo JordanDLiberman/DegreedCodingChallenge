@@ -25,21 +25,11 @@ namespace DegreedCodingChallenge.Services
         {
             var jokes = await _client.SearchJokes(searchTerm);
 
-            var response = new Dictionary<string, List<string>>();
-            foreach(var j in jokes)
-            {
-                var highlighted = Regex.Replace(j, searchTerm, "||" + searchTerm + "||", RegexOptions.IgnoreCase);
-                var size = GetJokeSize(j);
-                if (response.ContainsKey(size))
-                {
-                    response[size].Add(highlighted);
-                }
-                else
-                {
-                    response.Add(size, new List<string>() { highlighted });
-                }
-            }
-            return response;
+            var dict = jokes.Select(j => Regex.Replace(j, searchTerm, "||" + searchTerm + "||", RegexOptions.IgnoreCase))
+                .GroupBy(j => GetJokeSize(j))
+                .ToDictionary(j => j.Key, j => j.ToList());
+            return dict;
+
         }
 
         private string GetJokeSize(string input)
