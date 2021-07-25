@@ -1,6 +1,7 @@
 using DegreedCodingChallenge.Interfaces.Clients;
 using DegreedCodingChallenge.Services;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -15,6 +16,7 @@ namespace DegreedCodingChallenge.UnitTests
     {
 
         private Mock<ICanHazDadJokeClient> _mockClient;
+        private Mock<IConfiguration> _mockConfig;
         private JokeService _svc;
 
         [TestInitialize]
@@ -33,9 +35,10 @@ namespace DegreedCodingChallenge.UnitTests
                     $"This is a long {searchTerm} joke with a whole lot of words in it because sometimes jokes are funnier when they go on forever"
                 }));
 
+            _mockConfig = new Mock<IConfiguration>();
+            _mockConfig.SetupGet<string>(x => x["JokeSearchTermHighlight"]).Returns("||");
 
-
-            _svc = new JokeService(_mockClient.Object);
+            _svc = new JokeService(_mockClient.Object, _mockConfig.Object);
         }
 
         [TestMethod]

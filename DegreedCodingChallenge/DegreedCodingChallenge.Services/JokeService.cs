@@ -1,5 +1,7 @@
-﻿using DegreedCodingChallenge.Interfaces;
+﻿using DegreedCodingChallenge.Entities;
+using DegreedCodingChallenge.Interfaces;
 using DegreedCodingChallenge.Interfaces.Clients;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +13,11 @@ namespace DegreedCodingChallenge.Services
     public class JokeService : IJokeService
     {
         private readonly ICanHazDadJokeClient _client;
-        public JokeService(ICanHazDadJokeClient client)
+        private readonly IConfiguration _config;
+        public JokeService(ICanHazDadJokeClient client, IConfiguration config)
         {
             _client = client;
+            _config = config;
         }
 
         public async Task<string> GetRandomJoke()
@@ -25,7 +29,7 @@ namespace DegreedCodingChallenge.Services
         {
             var jokes = await _client.SearchJokes(searchTerm);
 
-            var dict = jokes.Select(j => Regex.Replace(j, searchTerm, "||" + searchTerm + "||", RegexOptions.IgnoreCase))
+            var dict = jokes.Select(j => Regex.Replace(j, searchTerm, _config["JokeSearchTermHighlight"] + searchTerm + _config["JokeSearchTermHighlight"], RegexOptions.IgnoreCase))
                 .GroupBy(j => GetJokeSize(j))
                 .ToDictionary(j => j.Key, j => j.ToList());
             return dict;
@@ -38,20 +42,21 @@ namespace DegreedCodingChallenge.Services
 
             if (numberOfWords < 10)
             {
-                return "Short";
+                return JokeLength.Short.ToString();
             }
             else if (numberOfWords < 20)
             {
-                return "Medium";
+                return JokeLength.Medium.ToString();
             }
             else 
             {
-                return "Long";
+                return JokeLength.Long.ToString();
             }
         }
 
         private int NumberOfWordsInString(string input)
         {
+            //This could also be implemented by doing a string.Split(' ').Count(), which would use more memory but probably be more performant.
             var count = 0;
             foreach(var c in input)
             {
