@@ -2,20 +2,20 @@
 
 # API
 The API is written in .net core.
-##Project structure:
-*API Controllers
-*Services
-*Clients
+## Project structure:
+* API Controllers
+* Services
+* Clients
 
-###Services and Clients share an Interfaces project
-###Entities project is used to deserialize client responses to native types
+### Services and Clients share an Interfaces project
+### Entities project is used to deserialize client responses to native types
 
-##Unit tests are created around controller methods and service methods.
+## Unit tests are created around controller methods and service methods.
 
-##Other features used:
-*Dependency Injection
-*CORS enabled (for local execution of UI and API)
-*Swagger UI
+## Other features used:
+* Dependency Injection
+* CORS enabled (for local execution of UI and API)
+* Swagger UI
 
 # UI
 The UI is written in Vue.js using Vueitfy components and axios for API calls.
